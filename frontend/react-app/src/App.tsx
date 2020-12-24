@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { TodoList } from './components/TodoList';
+import { TodoForm } from './components/TodoForm';
 
-function App() {
+const initialTodos: Todo[] = [];
+
+const App: React.FC = () => {
+  const [todos, setTodos] = useState(initialTodos);
+
+  useEffect(() => {
+    getTodos();
+  }, [setTodos]);
+
+  const getTodos = () => {
+    fetch('http://localhost:3000/api/v1/todos')
+    .then((response) => {return response.json()})
+    .then((todos) => {setTodos(todos)});
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Todo App</h1>
+      <TodoForm getTodos={getTodos} />
+      <TodoList todos={todos} getTodos={getTodos} />
+    </>
   );
 }
 
